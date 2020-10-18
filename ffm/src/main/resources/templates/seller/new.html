@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" href="favicon.ico">
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.2/cerulean/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EmRcsPP774S9MOi4ywB+JXUWjYnBdyInMzG2XsC5siZEUpexqxOMJW358dCYEjPu" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/master.css}">
+    <title>Fairfield Farmers Market</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a style="padding-right: 2em;" class="navbar-brand" href="/home">Fairfield Farmers Market</a>
+
+    <span th:if="${loggedIn}" th:text="${authentication.firstName} + ' ' + ${authentication.lastName}"
+          style="padding-right: 2em;" class="navbar-brand"></span>
+
+    <a th:if="${loggedIn == true and role == 'admin'}" style="padding-right: 2em;" class="navbar-brand"
+       href="/admin/userList">Users</a>
+    <a th:if="${loggedIn == true and role == 'admin'}" style="padding-right: 2em;" class="navbar-brand"
+       href="/admin/adminList">Admins</a>
+    <a th:if="${loggedIn == true and role == 'admin'}" style="padding-right: 2em;" class="navbar-brand"
+       href="/admin/buyerList">Buyers</a>
+    <a th:if="${loggedIn == true and role == 'admin'}" style="padding-right: 2em;" class="navbar-brand"
+       href="/admin/sellerList">Sellers</a>
+    <a th:if="${loggedIn == true and role == 'admin'}" style="padding-right: 2em;" class="navbar-brand"
+       href="/admin/productList">Products</a>
+
+
+    <a th:if="${loggedIn == true and role == 'seller'}" style="padding-right: 2em;" class="navbar-brand"
+       href="/seller/productList">Products on Sale</a>
+
+
+    <a th:if="${loggedIn == true and role == 'buyer'}" style="padding-right: 2em;" class="navbar-brand"
+       href="/buyer/shoppingCart">Shopping Cart</a>
+    <a th:if="${loggedIn == true and role == 'buyer'}" style="padding-right: 2em;" class="navbar-brand"
+       href="/order/list">Orders</a>
+
+
+    <a th:if="${loggedIn == null or loggedIn == false}" style="padding-right: 2em;" class="navbar-brand"
+       href="/userEntity/login">Login</a>
+    <a th:if="${loggedIn}" style="padding-right: 2em;" class="navbar-brand" href="/userEntity/logout">Log out</a>
+    <a th:if="${loggedIn == null or loggedIn == false}" style="padding-right: 2em;" class="navbar-brand"
+       href="/userEntity/register">Register</a>
+
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+            aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item" style="border-left: white 1px solid; padding-left: 2em; padding-right: 2em;">
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<div style="margin-top:1em;margin-bottom:1em;" class="container">
+    <form id="newSellerForm" method="post" action="/seller/new" th:object="${user}">
+        <fieldset>
+            <input type="hidden" name="id" th:value="${user.id}"/>
+            <input type="hidden" name="role" th:value="seller"/>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="firstName">First Name:</label>
+                        <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"
+                              class="alert alert-danger"></span>
+                        <input id="firstName" name="firstName" type="text" class="form-control"
+                               th:value="${user.firstName}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="lastName">Last Name:</label>
+                        <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"
+                              class="alert alert-danger"></span>
+                        <input id="lastName" name="lastName" type="text" class="form-control"
+                               th:value="${user.lastName}">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+                              class="alert alert-danger"></span>
+                        <input id="email" name="email" type="text" class="form-control"
+                               th:value="${user.email}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+                              class="alert alert-danger"></span>
+                        <input id="password" name="password" type="text" class="form-control"
+                               th:value="${user.password}">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="cardNumber">Card Number:</label>
+                        <span th:if="${#fields.hasErrors('paymentCard.cardNumber')}"
+                              th:errors="*{paymentCard.cardNumber}"
+                              class="alert alert-danger"></span>
+                        <input id="cardNumber" name="cardNumber" type="text" class="form-control"
+                               th:value="${user.paymentCard.cardNumber}">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="nameOnCard">Name on Card:</label>
+                        <span th:if="${#fields.hasErrors('password')}" th:errors="*{paymentCard.nameOnCard}"
+                              class="alert alert-danger"></span>
+                        <input id="nameOnCard" name="nameOnCard" type="text" class="form-control"
+                               th:value="${user.paymentCard.nameOnCard}">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="securityNumber">Security Number:</label>
+                        <span th:if="${#fields.hasErrors('password')}" th:errors="*{paymentCard.securityNumber}"
+                              class="alert alert-danger"></span>
+                        <input id="securityNumber" name="securityNumber" type="text" class="form-control"
+                               th:value="${user.paymentCard.securityNumber}">
+                    </div>
+                </div>
+            </div>
+
+            <div style="float:right;">
+                <button id="btnSubmit" type="submit" class="btn btn-outline-success">Submit</button>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+        integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+        crossorigin="anonymous"></script>
+</body>
+</html>

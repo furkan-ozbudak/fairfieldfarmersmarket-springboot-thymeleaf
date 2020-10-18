@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" href="favicon.ico">
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.2/cerulean/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EmRcsPP774S9MOi4ywB+JXUWjYnBdyInMzG2XsC5siZEUpexqxOMJW358dCYEjPu" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/master.css}">
+    <title>Fairfield Farmers Market</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a style="padding-right: 2em;" class="navbar-brand" href="/home">Fairfield Farmers Market</a>
+
+    <span th:if="${loggedIn == true}" th:text="${authentication.firstName} + ' ' + ${authentication.lastName}"
+          style="padding-right: 2em;" class="navbar-brand"></span>
+
+    <a th:if="${loggedIn == true and role == 'admin'}" style="padding-right: 2em;" class="navbar-brand"
+       href="/admin/userList">Users</a>
+    <a th:if="${loggedIn == true and role == 'admin'}" style="padding-right: 2em;" class="navbar-brand"
+       href="/admin/adminList">Admins</a>
+    <a th:if="${loggedIn == true and role == 'admin'}" style="padding-right: 2em;" class="navbar-brand"
+       href="/admin/buyerList">Buyers</a>
+    <a th:if="${loggedIn == true and role == 'admin'}" style="padding-right: 2em;" class="navbar-brand"
+       href="/admin/sellerList">Sellers</a>
+    <a th:if="${loggedIn == true and role == 'admin'}" style="padding-right: 2em;" class="navbar-brand"
+       href="/admin/productList">Products</a>
+
+    <a th:if="${loggedIn == true and role == 'seller'}" style="padding-right: 2em;" class="navbar-brand"
+       href="/seller/productList">Products on Sale</a>
+
+
+    <a th:if="${loggedIn == true and role == 'buyer'}" style="padding-right: 2em;" class="navbar-brand"
+       href="/buyer/shoppingCart">Shopping Cart</a>
+    <a th:if="${loggedIn == true and role == 'buyer'}" style="padding-right: 2em;" class="navbar-brand"
+       href="/order/list">Orders</a>
+
+
+    <a th:if="${loggedIn == null or loggedIn == false}" style="padding-right: 2em;" class="navbar-brand"
+       href="/userEntity/login">Login</a>
+    <a th:if="${loggedIn}" style="padding-right: 2em;" class="navbar-brand" href="/userEntity/logout">Log out</a>
+    <a th:if="${loggedIn == null or loggedIn == false}" style="padding-right: 2em;" class="navbar-brand"
+       href="/userEntity/register">Register</a>
+
+    <!--
+    <a th:if="${loggedIn}" style="padding-right: 2em;" class="navbar-brand" href="/userEntity/login">loggedIn</a>
+    <a th:if="${!loggedIn}" style="padding-right: 2em;" class="navbar-brand" href="/userEntity/login">!loggedIn</a> -->
+
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+            aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item" style="border-left: white 1px solid; padding-left: 2em; padding-right: 2em;">
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<div style="margin-top:1em;margin-bottom:1em;" class="container">
+
+    <div>
+        <span style="font-size: 2em; color: #32a5e7;">Shopping Cart</span>
+    </div>
+    <div style="font-size: 1em">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">Description</th>
+                <th scope="col">Pounds</th>
+                <th scope="col">Cost</th>
+                <th scope="col">Seller</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="cartItem , iterStat : ${shoppingCart.cartItems}">
+                <th scope="row" th:text="${iterStat.count}"></th>
+                <td th:text="${cartItem.product.name}"></td>
+                <td th:text="${cartItem.product.description}"></td>
+                <td th:text="${cartItem.quantity}"></td>
+                <td th:text="${cartItem.cost}"></td>
+                <td th:text="${cartItem.product.userEntity.firstName + ' ' + cartItem.product.userEntity.lastName}"></td>
+                <td><a th:href="@{'/product/remove/{id}'(id=${cartItem.id})}">Remove</a></td>
+                <!-- <td th:if="${role == 'buyer'}"><a th:href="@{'/buyer/addToCart/{id}'(id=${product.id})}">Add to Cart</a></td> -->
+            </tr>
+            <tr th:if="${isListEmpty}">
+                <td colspan="8" th:align="center">No products are on sale currently.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+        integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+        crossorigin="anonymous"></script>
+</body>
+</html>
